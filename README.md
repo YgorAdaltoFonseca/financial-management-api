@@ -1,784 +1,556 @@
-\# Financial Management API
+````document
+# Financial Management API
 
+REST API para gerenciamento financeiro, desenvolvida com **Java e Spring Boot**.
 
+O projeto tem como objetivo fornecer uma API para gerenciamento de usuários e informações financeiras, aplicando conceitos utilizados no desenvolvimento de aplicações backend modernas, como arquitetura em camadas, persistência de dados, validação, segurança, testes automatizados e containerização com Docker.
 
-REST API para gerenciamento financeiro, desenvolvida com Java e Spring Boot.
+---
 
+## 📋 Sobre o Projeto
 
+O **Financial Management API** é um projeto backend desenvolvido com foco em aprendizado prático e aplicação de conceitos utilizados no mercado de desenvolvimento de software.
 
-O projeto tem como objetivo fornecer uma API para gerenciamento de usuários e informações financeiras, utilizando uma arquitetura organizada em camadas, persistência de dados com PostgreSQL, autenticação e autorização, testes automatizados e ambiente containerizado com Docker.
+A aplicação utiliza o **Spring Boot** como framework principal e **PostgreSQL** como banco de dados.
 
+O ambiente de desenvolvimento é containerizado utilizando **Docker e Docker Compose**, facilitando a configuração e execução da aplicação e seus serviços.
 
+### 🎯 Objetivos
 
-\---
+- Desenvolver uma API REST utilizando Java e Spring Boot.
+- Aplicar arquitetura baseada em camadas.
+- Trabalhar com persistência utilizando JPA e Hibernate.
+- Implementar autenticação e autorização.
+- Aplicar validação de dados.
+- Criar testes automatizados.
+- Utilizar Docker para padronizar o ambiente.
+- Documentar a API utilizando Swagger/OpenAPI.
+- Aplicar boas práticas de desenvolvimento backend.
+- Construir um projeto para portfólio profissional.
 
+---
 
-
-\## Sobre o Projeto
-
-
-
-O \*\*Financial Management API\*\* é um projeto backend desenvolvido para praticar e aplicar conceitos utilizados no desenvolvimento de APIs REST modernas com Java.
-
-
-
-A aplicação utiliza o Spring Boot como framework principal e PostgreSQL como banco de dados.
-
-
-
-O projeto também utiliza Docker para facilitar a configuração e execução do ambiente de desenvolvimento.
-
-
-
-\### Objetivos
-
-
-
-\- Desenvolver uma API REST utilizando Java e Spring Boot.
-
-\- Aplicar conceitos de arquitetura em camadas.
-
-\- Trabalhar com persistência de dados utilizando JPA e Hibernate.
-
-\- Implementar autenticação e autorização.
-
-\- Criar testes automatizados.
-
-\- Utilizar Docker para padronizar o ambiente.
-
-\- Documentar a API utilizando Swagger/OpenAPI.
-
-\- Aplicar boas práticas de desenvolvimento backend.
-
-
-
-\---
-
-
-
-\# Tecnologias
-
-
+# 🚀 Tecnologias
 
 | Tecnologia | Utilização |
-
 |---|---|
-
 | Java 21 | Linguagem de programação |
-
 | Spring Boot | Framework principal |
-
-| Spring Security | Segurança e autenticação |
-
+| Spring Security | Segurança, autenticação e autorização |
 | Spring Data JPA | Persistência de dados |
-
 | Hibernate | ORM |
-
-| PostgreSQL | Banco de dados |
-
+| PostgreSQL | Banco de dados relacional |
 | Maven | Gerenciamento de dependências e build |
-
 | Docker | Containerização |
-
 | Docker Compose | Orquestração dos containers |
-
 | JUnit | Testes automatizados |
-
 | Mockito | Testes unitários e mocks |
-
 | Swagger / OpenAPI | Documentação da API |
-
 | Git | Controle de versão |
-
 | GitHub | Hospedagem do código |
 
+---
 
+# 🏗️ Arquitetura
 
-\---
-
-
-
-\# Arquitetura
-
-
-
-O projeto utiliza uma arquitetura baseada em camadas.
-
-
+O projeto utiliza uma arquitetura baseada em camadas, separando as responsabilidades de cada componente da aplicação.
 
 ```text
+                CLIENT
+                   │
+                   ▼
+              CONTROLLER
+                   │
+                   ▼
+                SERVICE
+                   │
+                   ▼
+              REPOSITORY
+                   │
+                   ▼
+               DATABASE
+````
 
-&#x20;               CLIENT
+### Controller
 
-&#x20;                  │
+Responsável por receber as requisições HTTP, encaminhar os dados para a camada de serviço e retornar as respostas da API.
 
-&#x20;                  ▼
-
-&#x20;             CONTROLLER
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;               SERVICE
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;             REPOSITORY
-
-&#x20;                  │
-
-&#x20;                  ▼
-
-&#x20;              DATABASE
-
-Controller
-
-
-
-Responsável por receber as requisições HTTP e retornar as respostas da API.
-
-
-
-Service
-
-
+### Service
 
 Responsável pela implementação das regras de negócio da aplicação.
 
-
-
-Repository
-
-
+### Repository
 
 Responsável pela comunicação com o banco de dados utilizando Spring Data JPA.
 
-
-
-Entity
-
-
+### Entity
 
 Representa as entidades persistidas no banco de dados.
 
+### DTO
 
+Responsável por definir os dados utilizados na comunicação entre a API e o cliente, evitando a exposição direta das entidades em determinados fluxos.
 
-DTO
+---
 
+# ⚙️ Funcionalidades
 
+## 👤 Usuários
 
-Responsável por definir os dados utilizados na comunicação entre a API e o cliente.
+* Cadastro de usuários
+* Persistência de usuários
+* Validação dos dados
+* Autenticação
+* Autorização
 
-
-
-Funcionalidades
-
-Usuários
-
-Cadastro de usuários
-
-Persistência de usuários
-
-Validação dos dados
-
-Autenticação e autorização
-
-Gestão Financeira
-
-
+## 💰 Gestão Financeira
 
 O projeto foi estruturado para trabalhar com informações financeiras, incluindo:
 
+* Entradas financeiras
+* Saídas financeiras
+* Valores
+* Datas
+* Categorias
+* Transações financeiras
 
+---
 
-Entradas financeiras
+# 🗄️ Banco de Dados
 
-Saídas financeiras
+O projeto utiliza **PostgreSQL** como banco de dados relacional.
 
-Valores
+### Banco utilizado
 
-Datas
+```text
+financial_management
+```
 
-Categorias
+A aplicação realiza a comunicação com o PostgreSQL através do **Spring Data JPA** e **Hibernate**.
 
-Transações financeiras
+---
 
-Banco de Dados
+# 🐳 Docker
 
+O projeto possui um ambiente Docker composto pela API, PostgreSQL e pgAdmin.
 
-
-O projeto utiliza PostgreSQL.
-
-
-
-O banco utilizado pela aplicação é:
-
-
-
-financial\_management
-
-
-
-A aplicação se conecta ao PostgreSQL através do Spring Data JPA e Hibernate.
-
-
-
-Docker
-
-
-
-O projeto possui um ambiente Docker composto pelos seguintes serviços:
-
-
-
+```text
 ┌────────────────────────────────────────────┐
-
 │                  Docker                    │
-
 │                                            │
-
 │  ┌──────────────┐                          │
-
 │  │     API      │                          │
-
 │  │   Port 8080  │                          │
-
 │  └───────┬──────┘                          │
-
 │          │                                 │
-
 │          ▼                                 │
-
 │  ┌──────────────┐                          │
-
 │  │  PostgreSQL  │                          │
-
 │  │   Port 5432  │                          │
-
 │  └──────────────┘                          │
-
 │                                            │
-
 │  ┌──────────────┐                          │
-
 │  │   pgAdmin    │                          │
-
 │  │   Port 5050  │                          │
-
 │  └──────────────┘                          │
-
 │                                            │
-
 └────────────────────────────────────────────┘
+```
 
-Serviços
+### Serviços
 
-Serviço	Porta
+| Serviço    | Porta |
+| ---------- | ----: |
+| API        |  8080 |
+| PostgreSQL |  5432 |
+| pgAdmin    |  5050 |
 
-API	8080
+---
 
-PostgreSQL	5432
+# 🔐 Variáveis de Ambiente
 
-pgAdmin	5050
+As informações sensíveis não devem ser armazenadas diretamente no código-fonte.
 
-Variáveis de Ambiente
+O projeto utiliza variáveis de ambiente para configurar informações como:
 
+```text
+DB_URL
+DB_USERNAME
+DB_PASSWORD
+POSTGRES_DB
+POSTGRES_USER
+POSTGRES_PASSWORD
+```
 
+O arquivo `.env` é ignorado pelo Git e **não deve ser enviado para o GitHub**.
 
-As informações sensíveis não são armazenadas diretamente no código-fonte.
+### Exemplo
 
+Crie um arquivo `.env` na raiz do projeto:
 
+```env
+POSTGRES_DB=financial_management
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=sua_senha
 
-O projeto utiliza variáveis de ambiente para informações como:
+DB_URL=jdbc:postgresql://postgres:5432/financial_management
+DB_USERNAME=postgres
+DB_PASSWORD=sua_senha
+```
 
+> **Importante:** nunca coloque senhas, tokens, chaves privadas ou outras credenciais reais no repositório.
 
+---
 
-DB\_URL
-
-DB\_USERNAME
-
-DB\_PASSWORD
-
-POSTGRES\_DB
-
-POSTGRES\_USER
-
-POSTGRES\_PASSWORD
-
-
-
-O arquivo .env é ignorado pelo Git e não deve ser enviado para o GitHub.
-
-
-
-Exemplo:
-
-
-
-POSTGRES\_DB=financial\_management
-
-POSTGRES\_USER=postgres
-
-POSTGRES\_PASSWORD=sua\_senha
-
-
-
-DB\_URL=jdbc:postgresql://postgres:5432/financial\_management
-
-DB\_USERNAME=postgres
-
-DB\_PASSWORD=sua\_senha
-
-
-
-Nunca coloque senhas, tokens, chaves privadas ou outras credenciais reais no repositório.
-
-
-
-Pré-requisitos
-
-
+# 📦 Pré-requisitos
 
 Para executar o projeto, é necessário ter instalado:
 
+* Java 21
+* Docker
+* Docker Compose
+* Git
 
+O projeto também utiliza o **Maven Wrapper**, portanto não é obrigatório instalar o Maven globalmente.
 
-Java 21
+---
 
-Docker
+# ▶️ Executando o Projeto
 
-Docker Compose
+## 1. Clonar o repositório
 
-Git
+```bash
+git clone https://github.com/YgorAdaltoFonseca/financial-management-api.git
+```
 
-Executando o Projeto
+Entre na pasta do projeto:
 
-1\. Clonar o repositório
-
-git clone https://github.com/SEU-USUARIO/financial-management-api.git
-
-
-
-Entrar na pasta:
-
-
-
+```bash
 cd financial-management-api
+```
 
-2\. Configurar as variáveis de ambiente
+---
 
+## 2. Configurar as variáveis de ambiente
 
+Crie um arquivo `.env` na raiz do projeto:
 
-Crie um arquivo:
-
-
-
+```text
 .env
+```
 
+Configure as variáveis necessárias de acordo com o ambiente local.
 
+---
 
-na raiz do projeto.
-
-
-
-Configure as variáveis necessárias.
-
-
-
-3\. Executar com Docker
-
-
+## 3. Executar com Docker
 
 Para construir as imagens e iniciar todos os serviços:
 
-
-
+```bash
 docker compose up -d --build
+```
 
-4\. Verificar os containers
+---
 
+## 4. Verificar os containers
+
+```bash
 docker compose ps
+```
 
+Os principais serviços esperados são:
 
-
-Os serviços esperados são:
-
-
-
+```text
 financial-management-api
-
 financial-management-db
-
 financial-management-pgadmin
+```
 
-Comandos Docker
+---
 
-Iniciar os serviços
+# 🐳 Comandos Docker
 
+### Iniciar os serviços
+
+```bash
 docker compose up -d
+```
 
-Construir novamente a aplicação
+### Construir novamente a aplicação
 
+```bash
 docker compose up -d --build
+```
 
-Ver containers
+### Verificar os containers
 
+```bash
 docker compose ps
+```
 
-Ver logs da API
+### Ver logs da API
 
+```bash
 docker logs financial-management-api
+```
 
-Ver últimas linhas dos logs
+### Ver as últimas linhas dos logs
 
+```bash
 docker logs financial-management-api --tail 50
+```
 
-Parar os serviços
+### Parar os serviços
 
+```bash
 docker compose down
+```
 
-Parar e remover os containers
+---
 
-docker compose down
+# 💻 Executando pelo IntelliJ IDEA
 
-Executando pelo IntelliJ IDEA
+Durante o desenvolvimento, a API também pode ser executada diretamente pelo **IntelliJ IDEA**.
 
+O PostgreSQL e o pgAdmin podem continuar sendo executados pelo Docker.
 
-
-Durante o desenvolvimento, a API também pode ser executada diretamente pelo IntelliJ IDEA.
-
-
-
-O banco PostgreSQL pode continuar sendo executado pelo Docker:
-
-
-
+```bash
 docker compose up -d postgres pgadmin
-
-
+```
 
 Depois, execute a classe principal da aplicação:
 
-
-
+```text
 FinancialManagementApiApplication
-
-
+```
 
 A API ficará disponível em:
 
-
-
+```text
 http://localhost:8080
+```
 
-Swagger
+---
 
-
+# 📖 Swagger / OpenAPI
 
 A documentação da API pode ser acessada através do Swagger UI:
 
-
-
+```text
 http://localhost:8080/swagger-ui/index.html
+```
 
+O Swagger permite:
 
+* Visualizar os endpoints disponíveis.
+* Consultar os parâmetros das requisições.
+* Visualizar os modelos de dados.
+* Testar os endpoints diretamente pelo navegador.
 
-O Swagger permite visualizar e testar os endpoints da API diretamente pelo navegador.
+---
 
+# 🗃️ pgAdmin
 
-
-pgAdmin
-
-
-
-O pgAdmin é utilizado para administrar o banco PostgreSQL.
-
-
+O **pgAdmin** é utilizado para administrar o banco de dados PostgreSQL.
 
 Acesse:
 
-
-
+```text
 http://localhost:5050
+```
 
+### Configuração do servidor
 
+Ao conectar o pgAdmin ao PostgreSQL dentro do Docker, utilize:
 
-O servidor PostgreSQL utilizado pelo pgAdmin dentro do Docker é:
-
-
-
+```text
 Host: postgres
-
 Port: 5432
-
-Database: financial\_management
-
+Database: financial_management
 Username: postgres
-
-
+```
 
 As credenciais devem ser obtidas através das variáveis de ambiente configuradas localmente.
 
+---
 
+# 🧪 Testes
 
-Testes
-
-
-
-O projeto utiliza JUnit e Mockito para testes automatizados.
-
-
+O projeto utiliza **JUnit** e **Mockito** para testes automatizados.
 
 Os testes têm como objetivo validar o comportamento das regras de negócio e dos componentes da aplicação.
 
+### Windows
 
-
-Executar os testes no Windows
-
+```bash
 mvnw.cmd test
+```
 
-Executar os testes com Maven Wrapper
+### Linux / macOS
 
+```bash
 ./mvnw test
+```
 
-Build
+---
 
-
+# 🔨 Build
 
 Para gerar o build da aplicação:
 
+### Windows
 
-
-Windows
-
+```bash
 mvnw.cmd clean package
+```
 
-Linux / macOS
+### Linux / macOS
 
+```bash
 ./mvnw clean package
+```
 
-Estrutura do Projeto
+---
 
+# 📁 Estrutura do Projeto
+
+```text
 financial-management-api/
-
 │
-
 ├── docs/
-
 │   ├── DiagramaClasses.png
-
 │   └── DiagramaRelacionamentoClasse.png
-
 │
-
 ├── src/
-
 │   ├── main/
-
 │   │   ├── java/
-
 │   │   │   └── side/
-
 │   │   │       └── financialmanagementapi/
-
 │   │   │
-
 │   │   └── resources/
-
 │   │       └── application.properties
-
 │   │
-
 │   └── test/
-
 │       └── java/
-
 │
-
 ├── .gitignore
-
 ├── Dockerfile
-
 ├── compose.yaml
-
 ├── mvnw
-
 ├── mvnw.cmd
-
 ├── pom.xml
-
 ├── README.md
-
 └── Requirements
+```
 
-Segurança
+---
 
+# 🔒 Segurança
 
-
-A aplicação utiliza Spring Security para proteger os recursos da API.
-
-
+A aplicação utiliza **Spring Security** para proteger os recursos da API.
 
 Informações sensíveis devem ser fornecidas através de variáveis de ambiente.
 
+As seguintes informações **não devem ser armazenadas no Git**:
 
+* Senhas
+* Tokens
+* API Keys
+* Credenciais do banco de dados
+* Chaves privadas
+* Arquivos `.env`
 
-O projeto não deve armazenar no Git:
+O arquivo `.gitignore` possui regras para impedir o envio dessas informações para o repositório.
 
+---
 
+# 🛠️ Desenvolvimento
 
-Senhas
+O projeto aplica práticas de desenvolvimento backend, incluindo:
 
-Tokens
+* Separação de responsabilidades
+* Arquitetura em camadas
+* DTOs
+* Validação de dados
+* Persistência com JPA
+* Hibernate
+* Tratamento de exceções
+* Testes automatizados
+* Containerização
+* Controle de versão com Git
+* Documentação com Swagger/OpenAPI
 
-API Keys
+---
 
-Credenciais do banco de dados
-
-Chaves privadas
-
-Arquivos .env
-
-
-
-O arquivo .gitignore possui regras para impedir o envio dessas informações para o repositório.
-
-
-
-Desenvolvimento
-
-
-
-O projeto está sendo desenvolvido utilizando práticas de desenvolvimento backend, incluindo:
-
-
-
-Separação de responsabilidades
-
-Arquitetura em camadas
-
-DTOs
-
-Validação de dados
-
-Persistência com JPA
-
-Tratamento de exceções
-
-Testes automatizados
-
-Containerização
-
-Controle de versão com Git
-
-Roadmap
-
-
+# 🗺️ Roadmap
 
 Funcionalidades planejadas para evolução do projeto:
 
+* [ ] Finalizar cadastro de usuários
+* [ ] Implementar autenticação completa
+* [ ] Implementar JWT
+* [ ] Implementar CRUD de transações
+* [ ] Implementar categorias financeiras
+* [ ] Implementar filtros de transações
+* [ ] Implementar paginação
+* [ ] Implementar relatórios financeiros
+* [ ] Aumentar cobertura de testes
+* [ ] Criar testes de integração
+* [ ] Utilizar Testcontainers
+* [ ] Configurar CI/CD
+* [ ] Deploy em ambiente de produção
+* [ ] Implementar monitoramento da aplicação
+* [ ] Melhorar mecanismos de segurança
 
+---
 
-&#x20;Finalizar cadastro de usuários
-
-&#x20;Implementar autenticação completa
-
-&#x20;Implementar JWT
-
-&#x20;Implementar CRUD de transações
-
-&#x20;Implementar categorias financeiras
-
-&#x20;Implementar filtros de transações
-
-&#x20;Implementar paginação
-
-&#x20;Implementar relatórios financeiros
-
-&#x20;Aumentar cobertura de testes
-
-&#x20;Criar testes de integração
-
-&#x20;Utilizar Testcontainers
-
-&#x20;Configurar CI/CD
-
-&#x20;Deploy em ambiente de produção
-
-&#x20;Monitoramento da aplicação
-
-&#x20;Melhorias de segurança
-
-Documentação
-
-
+# 📚 Documentação
 
 Os diagramas e documentos relacionados ao projeto estão disponíveis no diretório:
 
-
-
+```text
 docs/
+```
 
+Atualmente, o projeto possui diagramas relacionados a:
 
+* Diagrama de classes
+* Diagrama de relacionamento entre classes
 
-Atualmente o projeto possui diagramas de:
+---
 
+# 🔀 Controle de Versão
 
+O projeto utiliza **Git** para controle de versão.
 
-Classes
+Exemplo de fluxo básico de desenvolvimento:
 
-Relacionamento entre classes
-
-Controle de Versão
-
-
-
-O projeto utiliza Git para controle de versão.
-
-
-
-Exemplo de fluxo de desenvolvimento:
-
-
-
+```bash
 git status
-
-
 
 git add .
 
-
-
 git commit -m "feat: implement user registration"
 
-
-
 git push
+```
 
-Autor
+---
 
-Ygor Adalto Fonseca
+# 👨‍💻 Autor
 
-
+## Ygor Adalto Fonseca
 
 Desenvolvedor Java Backend em formação, com foco em desenvolvimento de APIs REST, Spring Boot, bancos de dados e arquitetura de software.
 
-
-
-GitHub:
-
-
+### GitHub
 
 https://github.com/YgorAdaltoFonseca
 
+---
 
+# 📄 Licença
 
-Licença
-
-
-
-Este projeto está em desenvolvimento e é destinado principalmente para fins de estudo, portfólio e evolução profissional.
-
+Este projeto está em desenvolvimento e é destinado principalmente para fins de **estudo, portfólio e evolução profissional**.
+:::
