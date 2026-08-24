@@ -1,0 +1,41 @@
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring
+docs/HELP.md
+
+# Environment / Secrets
+.env
+
+# Logs
+*.log
+api-log.txt
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# STS / Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Build
+build/
+
+# VS Code
+.vscode/

@@ -1,0 +1,398 @@
+# API de Gerenciamento de Finanças Pessoais
+
+## 1. Objetivo do Sistema
+O sistema tem como objetivo permitir o **gerenciamento centralizado das finanças pessoais**, possibilitando o registro, organização, consulta e acompanhamento de entradas, saídas, saldo, categorias de gastos, assinaturas e demais movimentações financeiras.
+A aplicação deverá permitir que o usuário registre transações **manualmente**, mantendo um histórico financeiro organizado e possibilitando a consulta de informações como valor, data, horário, categoria e descrição da movimentação.
+Como evolução futura, o sistema poderá receber e processar dados de transações provenientes do **Banco Inter**, permitindo a integração e automatização da importação das movimentações bancárias.
+O backend será desenvolvido como uma **API REST em Java com Spring Boot**, responsável pelas regras de negócio, persistência, segurança e disponibilização dos dados. O frontend será desenvolvido separadamente.
+
+### Escopo inicial
+O sistema deverá contemplar:
+* Gerenciamento de usuários.
+* Registro manual de entradas e saídas.
+* Organização das transações por categorias.
+* Consulta e filtragem do histórico financeiro.
+* Controle de saldo.
+* Gerenciamento de assinaturas.
+* Relatórios e estatísticas financeiras.
+* Autenticação e autorização.
+* Persistência segura dos dados.
+
+### Escopo futuro
+* Integração com o Banco Inter.
+* Importação automática de transações bancárias.
+* Sincronização de movimentações.
+* Classificação automática de transações.
+* Recursos inteligentes para análise das finanças.
+
+---
+
+## 2. Usuários do Sistema
+
+### 2.1 Usuário comum
+Pessoa que deseja organizar e acompanhar suas próprias finanças pessoais.
+O usuário poderá:
+* Cadastrar suas informações.
+* Registrar entradas e saídas.
+* Consultar seu histórico financeiro.
+* Criar e utilizar categorias.
+* Gerenciar suas assinaturas.
+* Acompanhar seu saldo.
+* Consultar relatórios e estatísticas.
+* Alterar e excluir seus próprios registros.
+
+### 2.2 Administrador
+Caso o sistema futuramente necessite de administração centralizada, poderá existir um perfil administrativo responsável por tarefas como:
+* Gerenciamento de usuários.
+* Gerenciamento de categorias globais.
+* Monitoramento da aplicação.
+* Administração de configurações do sistema.
+
+> O perfil de administrador não é obrigatório para a primeira versão e poderá ser definido durante a implementação.
+
+---
+
+## 3. Problemas Identificados
+
+### PI00 — Falta de organização financeira
+Dificuldade para manter entradas, saídas e demais movimentações financeiras organizadas em um único local.
+
+### PI01 — Dependência de anotações manuais
+Uso de aplicativos de notas ou anotações dispersas para registrar informações financeiras, dificultando a organização e a consulta posterior.
+
+### PI02 — Perda de informações
+Risco de perda de registros financeiros devido à utilização de anotações que não possuem uma estrutura adequada de armazenamento e histórico.
+
+### PI03 — Dificuldade para identificar gastos
+Dificuldade para descobrir onde, quando e com o que o dinheiro foi gasto.
+
+### PI04 — Falta de histórico financeiro estruturado
+Ausência de uma estrutura que permita consultar as movimentações por período, categoria, valor, data ou tipo de transação.
+
+### PI05 — Falta de controle sobre entradas
+Dificuldade para identificar quanto dinheiro entrou, qual foi a origem da entrada e quando ela ocorreu.
+
+### PI06 — Falta de controle sobre assinaturas
+Dificuldade para acompanhar serviços recorrentes, valores cobrados, periodicidade e próximas datas de cobrança.
+
+### PI07 — Dificuldade para acompanhar o saldo
+Falta de uma visão consolidada do saldo financeiro com base nas entradas e saídas registradas.
+
+---
+
+# 4. Requisitos Funcionais
+
+### RF00 — Cadastro de usuários
+O sistema deverá permitir o cadastro de usuários, armazenando as informações necessárias para sua identificação e utilização da aplicação.
+
+### RF01 — Autenticação de usuários
+O sistema deverá permitir que o usuário realize login de forma segura para acessar seus dados financeiros.
+
+### RF02 — Gerenciamento de usuário
+O sistema deverá permitir que o usuário consulte e altere suas informações cadastrais.
+
+### RF03 — Cadastro de entradas
+O sistema deverá permitir o registro manual de entradas financeiras.
+Uma entrada deverá conter, no mínimo:
+* Valor.
+* Data.
+* Categoria.
+* Descrição.
+* Usuário responsável pelo registro.
+
+### RF04 — Cadastro de saídas
+O sistema deverá permitir o registro manual de saídas financeiras.
+Uma saída deverá conter, no mínimo:
+
+* Valor.
+* Data.
+* Categoria.
+* Descrição.
+* Usuário responsável pelo registro.
+
+### RF05 — Registro de horário da transação
+O sistema deverá permitir armazenar a data e o horário em que a transação ocorreu.
+
+### RF06 — Edição de transações
+O sistema deverá permitir que o usuário altere os dados de uma transação registrada.
+
+### RF07 — Exclusão de transações
+O sistema deverá permitir a exclusão de transações pertencentes ao usuário.
+
+### RF08 — Consulta de transações
+O sistema deverá permitir consultar as transações financeiras registradas pelo usuário.
+
+### RF09 — Filtragem de transações
+O sistema deverá permitir filtrar transações por critérios como:
+* Período.
+* Tipo de transação.
+* Categoria.
+* Valor.
+* Descrição.
+
+### RF10 — Ordenação de transações
+O sistema deverá permitir ordenar as transações por critérios como data, valor e tipo.
+
+### RF11 — Cadastro de categorias
+O sistema deverá permitir o cadastro de categorias para classificação das transações.
+Exemplos:
+* Alimentação.
+* Transporte.
+* Moradia.
+* Lazer.
+* Salário.
+* Investimentos.
+* Educação.
+* Saúde.
+* Outros.
+
+### RF12 — Gerenciamento de categorias
+O sistema deverá permitir criar, consultar, alterar e excluir categorias, respeitando as regras de integridade relacionadas às transações existentes.
+
+### RF13 — Controle de saldo
+O sistema deverá disponibilizar o saldo financeiro calculado com base nas entradas e saídas registradas.
+
+### RF14 — Consulta de saldo por período
+O sistema deverá permitir consultar o saldo considerando um período determinado pelo usuário.
+
+### RF15 — Histórico financeiro
+O sistema deverá manter o histórico das movimentações financeiras registradas pelo usuário.
+
+### RF16 — Controle de assinaturas
+O sistema deverá permitir o cadastro e gerenciamento de assinaturas recorrentes.
+Uma assinatura deverá permitir armazenar informações como:
+* Nome.
+* Valor.
+* Periodicidade.
+* Data de início.
+* Próxima data de cobrança.
+* Categoria.
+* Status.
+* Descrição.
+
+### RF17 — Gerenciamento de assinaturas
+O sistema deverá permitir consultar, editar, cancelar e reativar assinaturas.
+
+### RF18 — Controle de cobranças recorrentes
+O sistema deverá permitir identificar as próximas cobranças previstas das assinaturas cadastradas.
+
+### RF19 — Relatórios financeiros
+O sistema deverá disponibilizar informações consolidadas sobre as movimentações financeiras.
+
+### RF20 — Estatísticas financeiras
+O sistema deverá permitir visualizar estatísticas como:
+
+* Total de entradas.
+* Total de saídas.
+* Saldo.
+* Gastos por categoria.
+* Gastos por período.
+* Evolução das despesas.
+* Gastos recorrentes.
+
+### RF21 — Consulta de gastos por categoria
+O sistema deverá permitir identificar quanto foi gasto em cada categoria durante determinado período.
+
+### RF22 — Consulta de entradas por origem
+O sistema deverá permitir identificar o valor das entradas e suas respectivas origens ou categorias.
+
+### RF23 — Identificação da origem da transação
+O sistema deverá permitir diferenciar transações inseridas manualmente de transações provenientes de uma futura integração bancária.
+
+### RF24 — Preparação para integração bancária
+A arquitetura deverá permitir a futura integração com o Banco Inter para recebimento ou importação de transações financeiras.
+
+### RF25 — Isolamento dos dados financeiros
+O sistema deverá garantir que um usuário somente consiga consultar e manipular os próprios dados financeiros.
+
+---
+
+# 5. Requisitos Não Funcionais
+
+### RNF00 — Segurança
+A API deverá adotar mecanismos de segurança adequados para proteger os dados financeiros e pessoais dos usuários.
+
+### RNF01 — Autenticação
+O acesso aos recursos protegidos da API deverá exigir autenticação válida.
+
+### RNF02 — Autorização
+O sistema deverá verificar se o usuário autenticado possui permissão para acessar ou modificar determinado recurso.
+
+### RNF03 — Proteção de credenciais
+Senhas não deverão ser armazenadas em texto puro. Deverão ser armazenadas utilizando algoritmo de hash adequado.
+
+### RNF04 — Proteção dos dados
+Os dados financeiros deverão ser protegidos contra acesso, alteração ou exclusão não autorizados.
+
+### RNF05 — Validação de dados
+A API deverá validar os dados recebidos antes de realizar operações de persistência ou processamento.
+
+### RNF06 — Integridade dos dados
+O sistema deverá garantir a consistência e integridade dos dados financeiros armazenados.
+
+### RNF07 — Controle de concorrência
+O sistema deverá tratar operações concorrentes de forma a evitar inconsistências nos dados.
+
+### RNF08 — Desempenho
+As operações comuns da API deverão apresentar tempo de resposta adequado para utilização cotidiana, evitando processamento desnecessário.
+
+### RNF09 — Escalabilidade
+A arquitetura deverá permitir a evolução do sistema para suportar aumento no número de usuários, transações e funcionalidades.
+
+### RNF10 — Manutenibilidade
+O código do backend deverá ser organizado de maneira modular, facilitando manutenção, testes e evolução do sistema.
+
+### RNF11 — Separação de responsabilidades
+A aplicação deverá manter separação adequada entre camadas de apresentação/API, regras de negócio e persistência.
+
+### RNF12 — Disponibilidade
+A API deverá ser projetada para permanecer disponível durante a operação normal, considerando posteriormente mecanismos de monitoramento, recuperação e redundância.
+
+### RNF13 — Tratamento de erros
+A API deverá retornar respostas padronizadas para erros de validação, autenticação, autorização, recursos inexistentes e erros internos.
+
+### RNF14 — Documentação da API
+A API deverá possuir documentação atualizada de seus endpoints, parâmetros, respostas, códigos HTTP e regras relevantes.
+
+### RNF15 — Versionamento
+A API deverá possuir estratégia de versionamento que permita evolução sem quebrar clientes existentes.
+
+### RNF16 — Auditoria
+O sistema deverá possibilitar futuramente o registro de operações relevantes, como criação, alteração e exclusão de registros financeiros.
+
+### RNF17 — Testabilidade
+As regras de negócio deverão ser estruturadas de forma que possam ser testadas automaticamente.
+
+### RNF18 — Configuração por ambiente
+Configurações específicas de desenvolvimento, testes e produção deverão ser separadas do código-fonte.
+
+---
+
+# 6. Regras de Negócio
+
+### RGN00 — Associação com usuário
+Toda transação financeira deverá estar obrigatoriamente associada a um usuário.
+
+### RGN01 — Valor da entrada
+Uma entrada deverá possuir valor maior que zero.
+
+### RGN02 — Valor da saída
+Uma saída deverá possuir valor maior que zero.
+
+### RGN03 — Data da transação
+Toda transação deverá possuir uma data de ocorrência.
+
+### RGN04 — Tipo da transação
+Toda transação deverá possuir um tipo, sendo inicialmente permitido:
+* Entrada.
+* Saída.
+
+### RGN05 — Categoria da transação
+Toda transação deverá estar associada a uma categoria válida.
+
+### RGN06 — Saldo
+O saldo deverá ser calculado considerando as entradas e saídas registradas para o usuário.
+**Fórmula conceitual:**
+`Saldo = Total de Entradas - Total de Saídas`
+
+### RGN07 — Saldo por período
+Quando o usuário consultar o saldo de determinado período, deverão ser consideradas somente as movimentações pertencentes ao período solicitado, conforme a regra de cálculo definida pelo sistema.
+
+### RGN08 — Propriedade das transações
+Um usuário não poderá visualizar, alterar ou excluir transações pertencentes a outro usuário.
+
+### RGN09 — Exclusão de categoria
+Uma categoria associada a transações existentes não deverá ser excluída de maneira que provoque perda ou inconsistência dos dados históricos.
+
+### RGN10 — Assinatura
+Toda assinatura deverá estar associada obrigatoriamente a um usuário.
+
+### RGN11 — Valor da assinatura
+Uma assinatura deverá possuir valor maior que zero.
+
+### RGN12 — Periodicidade da assinatura
+Toda assinatura deverá possuir uma periodicidade válida, como:
+* Mensal.
+* Anual.
+* Semanal.
+* Outra periodicidade definida pelo sistema.
+
+### RGN13 — Data de cobrança
+Toda assinatura recorrente deverá possuir uma data de cobrança ou uma regra capaz de determinar sua próxima cobrança.
+
+### RGN14 — Status da assinatura
+Uma assinatura deverá possuir um status que permita identificar, no mínimo, se está ativa ou cancelada.
+
+### RGN15 — Histórico de transações
+Alterações ou exclusões de transações não deverão comprometer a integridade do histórico financeiro do usuário.
+
+### RGN16 — Transações manuais
+Uma transação cadastrada manualmente deverá ser identificada internamente como uma transação de origem manual.
+
+### RGN17 — Transações bancárias futuras
+Transações provenientes de uma futura integração bancária deverão possuir identificação de sua origem e, quando disponível, um identificador externo da instituição financeira.
+
+### RGN18 — Prevenção de duplicidade
+O sistema deverá possuir mecanismo para evitar que uma mesma transação bancária seja importada mais de uma vez quando ocorrer a futura integração com o Banco Inter.
+
+### RGN19 — Dados obrigatórios
+O sistema não deverá permitir o cadastro de uma transação quando qualquer informação obrigatória estiver ausente ou inválida.
+
+### RGN20 — Valores monetários
+Valores financeiros deverão ser armazenados e processados utilizando representação adequada para valores monetários, evitando erros decorrentes de operações com ponto flutuante.
+
+### RGN21 — Datas e horários
+As datas e horários das transações deverão ser armazenados de forma consistente, considerando o fuso horário definido para o sistema.
+
+### RGN22 — Consistência do saldo
+O saldo apresentado ao usuário deverá refletir as transações válidas registradas no sistema.
+
+### RGN23 — Exclusão de usuário
+A exclusão de um usuário deverá possuir uma política definida para os dados financeiros associados, evitando registros órfãos ou perda acidental de informações.
+
+### RGN24 — Identificação de transação
+Cada transação deverá possuir um identificador único.
+
+### RGN25 — Identificação de assinatura
+Cada assinatura deverá possuir um identificador único.
+
+---
+
+# 7. Considerações para a Arquitetura
+Esta documentação deverá servir como base para a próxima etapa de definição da arquitetura do backend.
+Antes da implementação, recomenda-se definir pelo menos os seguintes conceitos de domínio:
+
+* **Usuário**
+* **Transação**
+* **Categoria**
+* **Assinatura**
+* **Origem da transação**
+* **Tipo da transação**
+* **Status da assinatura**
+
+Também será necessário definir posteriormente:
+
+1. Modelo entidade-relacionamento.
+2. Estrutura das tabelas do banco de dados.
+3. Relacionamentos e cardinalidades.
+4. Endpoints REST.
+5. DTOs de entrada e saída.
+6. Estratégia de autenticação.
+7. Estratégia de autorização.
+8. Códigos HTTP utilizados pela API.
+9. Padronização das respostas e erros.
+10. Estratégia de testes.
+11. Estratégia de versionamento da API.
+12. Estratégia de integração futura com o Banco Inter.
+
+### Observação arquitetural importante
+
+A integração com o Banco Inter deve ser tratada como uma **funcionalidade futura**, mas o domínio já deve ser projetado para suportá-la. Por isso, é recomendável que uma transação possua informações capazes de identificar sua origem, por exemplo, **MANUAL** ou **BANCÁRIA**, sem acoplar o núcleo financeiro diretamente à implementação da integração externa.
+
+Isso permite que o backend comece simples, com cadastro manual de transações, mas possa evoluir posteriormente para integração bancária sem exigir uma remodelagem completa do domínio.
+
+Observação arquitetural importante
+
+A integração com o Banco Inter deve ser tratada como uma funcionalidade futura, mas o domínio já deve ser projetado para suportá-la. Por isso, é recomendável que uma transação possua informações capazes de identificar sua origem, por exemplo, MANUAL ou BANCÁRIA, sem acoplar o núcleo financeiro diretamente à implementação da integração externa.
+
+Isso permite que o backend comece simples, com cadastro manual de transações, mas possa evoluir posteriormente para integração bancária sem exigir uma remodelagem completa do domínio.
