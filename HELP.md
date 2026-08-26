@@ -26,7 +26,7 @@ The following guides illustrate how to use some features concretely:
 
 ### Docker Compose support
 
-This project contains a Docker Compose file named `compose.yaml`.
+This project contains a Docker Compose file named `compose.yml`.
 In this file, the following services have been defined:
 
 * postgres: [`postgres:latest`](https://hub.docker.com/_/postgres)
