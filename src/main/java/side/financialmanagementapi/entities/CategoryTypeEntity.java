@@ -14,7 +14,7 @@ import side.financialmanagementapi.enums.CategoryTypeEnum;
 public class CategoryTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
