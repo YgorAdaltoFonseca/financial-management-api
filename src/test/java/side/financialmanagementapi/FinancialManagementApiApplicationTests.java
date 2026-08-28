@@ -5,9 +5,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -21,6 +18,7 @@ import side.financialmanagementapi.entities.UserEntity;
 import side.financialmanagementapi.repository.UserEntityRepository;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,10 +79,11 @@ class FinancialManagementApiApplicationTests {
 
         String name  = "User Name Entity";
         String email = "user.entity@mail.com";
+
         UserEntity userEntity = UserEntity.builder()
                                           .name(name)
                                           .email(email)
-                                          .senhaHash("qwertyhash654987321hashqwerty")
+                                          .senhaHash(UUID.randomUUID().toString())
                                           .registrationDate(LocalDateTime.now())
                                           .build();
 
