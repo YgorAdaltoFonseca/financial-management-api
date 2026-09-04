@@ -31,7 +31,26 @@ public class UserService {
                 savedUserEntity.getName(),
                 savedUserEntity.getEmail()
         );
-
-
     }
+
+    //ATUALIZAR USUARIO
+    public UserResponse atualizarUsuario(Long id, UserRequest requestUser) {
+
+        UserEntity userEntity = userEntityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        userEntity.setName(requestUser.name());
+        userEntity.setEmail(requestUser.email());
+        userEntity.setSenhaHash(requestUser.senhaHash());
+
+        UserEntity savedUserEntity = userEntityRepository.save(userEntity);
+
+        return new UserResponse(
+                savedUserEntity.getId(),
+                savedUserEntity.getName(),
+                savedUserEntity.getEmail()
+        );
+    }
+
+
 }
