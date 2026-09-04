@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(nullable = false , unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 6)
     private String senhaHash;
 
     @CreationTimestamp
