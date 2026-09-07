@@ -29,7 +29,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/updateCategory")
+    @PutMapping("/updateCategory/{userId}")
     public ResponseEntity<CategoryResponse> atualizarCategoria(
             @PathVariable Long userId,
             @RequestBody CategoryRequest request

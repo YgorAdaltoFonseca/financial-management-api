@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 
 public record TransactionRequest(
         BigDecimal value,
-        LocalDateTime dateTime,
         TransactionTypeEnum type,
         TransactionOriginEnum origin,
-        String description,
-        Long categoryTypeId
+        String description
 ) {}
