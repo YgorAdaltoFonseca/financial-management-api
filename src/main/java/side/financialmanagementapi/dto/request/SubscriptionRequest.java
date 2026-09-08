@@ -9,6 +9,5 @@ public record SubscriptionRequest (
         String name,
         BigDecimal value,
         FrequencyEnum frequency,
-        LocalDate startDate,
-        Long categoryTypeId
+        LocalDate startDate
 ){}

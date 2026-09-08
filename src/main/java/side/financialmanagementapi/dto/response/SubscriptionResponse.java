@@ -14,6 +14,11 @@ public record SubscriptionResponse(
         LocalDate startDate,
         LocalDate nextCharge,
         SubscriptionStatusEnum subscriptionStatus,
+        Long userId ,
+        String userName ,
         Long categoryTypeId,
         String categoryTypeName
+
+
+
 ) {}

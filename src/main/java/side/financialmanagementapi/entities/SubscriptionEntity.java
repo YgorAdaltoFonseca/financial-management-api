@@ -41,11 +41,10 @@ public class SubscriptionEntity {
     private SubscriptionStatusEnum subscriptionStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_type_id", nullable = false)
-    private CategoryTypeEntity categoryType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_type_id", nullable = false)
+    private CategoryTypeEntity categoryType;
 }
