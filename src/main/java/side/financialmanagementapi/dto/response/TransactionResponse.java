@@ -14,5 +14,7 @@ public record TransactionResponse(
         TransactionOriginEnum origin,
         String description,
         Long categoryTypeId,
-        String categoryTypeName
+        String categoryTypeName ,
+        Long userId ,
+        String userName
 ){}

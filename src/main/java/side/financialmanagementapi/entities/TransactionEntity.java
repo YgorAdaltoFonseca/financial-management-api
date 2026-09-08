@@ -26,6 +26,11 @@ public class TransactionEntity {
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
+    @PrePersist
+    public void prePersist() {
+        dateTime = LocalDateTime.now();
+    }
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionTypeEnum type;
