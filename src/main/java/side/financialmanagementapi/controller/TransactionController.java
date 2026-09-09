@@ -1,6 +1,7 @@
 package side.financialmanagementapi.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class TransactionController {
 
     @PostMapping("/createTransaction/{CategoryTypeId}/{UserId}")
     public ResponseEntity<TransactionResponse> createTransaction(
-            @RequestBody TransactionRequest transactionRequest,
+            @Valid @RequestBody TransactionRequest transactionRequest,
             @PathVariable Long CategoryTypeId,
             @PathVariable Long UserId
     ) {
@@ -32,7 +33,7 @@ public class TransactionController {
     @PutMapping("updateTransaction/{id}/{UserId}/{CategoryTypeId}")
     public ResponseEntity<TransactionResponse> updateTransaction(
             @PathVariable Long id ,
-            @RequestBody TransactionRequest request ,
+            @Valid @RequestBody TransactionRequest request ,
             @PathVariable Long CategoryTypeId ,
             @PathVariable Long UserId
     ){

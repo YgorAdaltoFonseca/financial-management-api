@@ -7,6 +7,8 @@ import side.financialmanagementapi.dto.request.UserRequest;
 import side.financialmanagementapi.dto.response.CategoryResponse;
 import side.financialmanagementapi.entities.CategoryTypeEntity;
 import side.financialmanagementapi.entities.UserEntity;
+import side.financialmanagementapi.exceptions.CategoryNotFoundException;
+import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.CategoryTypeRepository;
 import side.financialmanagementapi.repository.UserEntityRepository;
 
@@ -22,7 +24,7 @@ public class CategoryService {
     //Criar categoria
     public CategoryResponse createCategory(CategoryRequest categoryRequest , Long userId) {
         UserEntity user = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         CategoryTypeEntity categoryTypeEntity = CategoryTypeEntity.builder()
                 .name(categoryRequest.name())
@@ -42,7 +44,7 @@ public class CategoryService {
     //Atualizar categoria
     public CategoryResponse updateCategory(Long id , CategoryRequest categoryRequest){
         CategoryTypeEntity categoryType = categoryTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         categoryType.setName(categoryRequest.name());
         categoryType.setCategoryType(categoryRequest.categoryType());
@@ -59,7 +61,7 @@ public class CategoryService {
     //Deletar Categoria
     public void deleteCategory(Long id){
         CategoryTypeEntity categoryType = categoryTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         categoryTypeRepository.delete(categoryType);
     }

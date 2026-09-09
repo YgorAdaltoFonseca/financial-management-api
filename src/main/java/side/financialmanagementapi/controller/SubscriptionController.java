@@ -1,5 +1,6 @@
 package side.financialmanagementapi.controller;
 
+import jakarta.validation.Valid;
 import jdk.jshell.JShell;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class SubscriptionController {
 
     @PostMapping("/createSubscription/{userId}/{categoryId}")
     public ResponseEntity<SubscriptionResponse>  createSubscription(
-            @RequestBody SubscriptionRequest subscriptionRequest ,
+            @Valid @RequestBody SubscriptionRequest subscriptionRequest ,
             @PathVariable Long userId ,
             @PathVariable Long categoryId
     ) {
@@ -33,7 +34,7 @@ public class SubscriptionController {
             @PathVariable Long id,
             @PathVariable Long userId ,
             @PathVariable Long categoryId ,
-            @RequestBody SubscriptionRequest subscriptionRequest
+            @Valid @RequestBody SubscriptionRequest subscriptionRequest
     ) {
         SubscriptionResponse subscriptionResponse =
                 subscriptionService.updateSubscription

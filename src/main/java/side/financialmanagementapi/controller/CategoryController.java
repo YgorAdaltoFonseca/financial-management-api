@@ -1,5 +1,6 @@
 package side.financialmanagementapi.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class CategoryController {
     @PostMapping("/createCategory/{userId}")
     public ResponseEntity<CategoryResponse> criarCategoria(
             @PathVariable Long userId,
-            @RequestBody CategoryRequest request
+            @Valid @RequestBody CategoryRequest request
     ) {
 
         CategoryResponse response = categoryService.createCategory(request, userId);
@@ -32,7 +33,7 @@ public class CategoryController {
     @PutMapping("/updateCategory/{userId}")
     public ResponseEntity<CategoryResponse> atualizarCategoria(
             @PathVariable Long userId,
-            @RequestBody CategoryRequest request
+            @Valid @RequestBody CategoryRequest request
     ){
         CategoryResponse response = categoryService.updateCategory(userId, request);
 
