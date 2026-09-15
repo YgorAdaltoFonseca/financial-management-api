@@ -7,6 +7,9 @@ import side.financialmanagementapi.dto.response.SubscriptionResponse;
 import side.financialmanagementapi.entities.CategoryTypeEntity;
 import side.financialmanagementapi.entities.SubscriptionEntity;
 import side.financialmanagementapi.entities.UserEntity;
+import side.financialmanagementapi.exceptions.CategoryNotFoundException;
+import side.financialmanagementapi.exceptions.SubscriptionNotFoundException;
+import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.CategoryTypeRepository;
 import side.financialmanagementapi.repository.SubscriptionRepository;
 import side.financialmanagementapi.repository.UserEntityRepository;
@@ -46,10 +49,10 @@ public class SubscriptionService {
             Long categoryId
     ) {
         UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         LocalDate nextCharge = getNextCharge(subscriptionRequest);
 
@@ -89,13 +92,13 @@ public class SubscriptionService {
             SubscriptionRequest subscriptionRequest
     ) {
         SubscriptionEntity subscriptionEntity = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+                .orElseThrow(() -> new SubscriptionNotFoundException("Subscription not found"));
 
         UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         LocalDate nextCharge = getNextCharge(subscriptionRequest);
 
@@ -128,7 +131,7 @@ public class SubscriptionService {
     //Excluir
     public void deleteSubscription(Long id) {
         SubscriptionEntity subscriptionEntity = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+                .orElseThrow(() -> new SubscriptionNotFoundException("Subscription not found"));
 
         subscriptionRepository.delete(subscriptionEntity);
     }

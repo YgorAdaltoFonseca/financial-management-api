@@ -7,6 +7,9 @@ import side.financialmanagementapi.dto.response.TransactionResponse;
 import side.financialmanagementapi.entities.CategoryTypeEntity;
 import side.financialmanagementapi.entities.TransactionEntity;
 import side.financialmanagementapi.entities.UserEntity;
+import side.financialmanagementapi.exceptions.CategoryNotFoundException;
+import side.financialmanagementapi.exceptions.TransactionNotFoundException;
+import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.CategoryTypeRepository;
 import side.financialmanagementapi.repository.TransactionRepository;
 import side.financialmanagementapi.repository.UserEntityRepository;
@@ -28,10 +31,10 @@ public class TransactionService {
             System.out.println("categoryTypeId recebido: " + categoryTypeId);
 
             CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryTypeId)
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
             UserEntity user = userEntityRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
             TransactionEntity transactionEntity = TransactionEntity.builder()
                     .value(transactionRequest.value())
@@ -68,13 +71,13 @@ public class TransactionService {
                 Long userId
         ) {
             TransactionEntity transactionEntity = transactionRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                    .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
 
             CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryTypeId)
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
             UserEntity user = userEntityRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
             transactionEntity.setValue(transactionRequest.value());
             transactionEntity.setType(transactionRequest.type());
@@ -101,7 +104,7 @@ public class TransactionService {
         //deletar
         public void deleteTransaction(Long id) {
             TransactionEntity transactionEntity = transactionRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                    .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
 
             transactionRepository.delete(transactionEntity);
         }

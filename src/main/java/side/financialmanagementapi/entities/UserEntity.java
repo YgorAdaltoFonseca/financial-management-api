@@ -1,6 +1,8 @@
 package side.financialmanagementapi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -22,6 +24,8 @@ public class UserEntity {
     private String name;
 
     @Column(nullable = false , unique = true)
+    @NotBlank
+    @Email
     private String email;
 
     @Column(nullable = false , length = 60)

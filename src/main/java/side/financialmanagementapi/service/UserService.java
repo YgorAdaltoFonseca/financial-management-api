@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import side.financialmanagementapi.dto.request.UserRequest;
 import side.financialmanagementapi.dto.response.UserResponse;
 import side.financialmanagementapi.entities.UserEntity;
+import side.financialmanagementapi.exceptions.EmailAlreadyExistsException;
+import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.UserEntityRepository;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class UserService {
     //CADASTRAR USUARIO
     public UserResponse cadastroUsuario(UserRequest requestUser) {
         if (userEntityRepository.existsByEmail(requestUser.email())) {
-            throw new IllegalArgumentException("E-mail já cadastrado");
+            throw new EmailAlreadyExistsException("Email already exists!");
         }
 
         UserEntity userEntity = UserEntity.builder()
@@ -40,7 +42,7 @@ public class UserService {
     public UserResponse atualizarUsuario(Long id, UserRequest requestUser) {
 
         UserEntity userEntity = userEntityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
         userEntity.setName(requestUser.name());
         userEntity.setEmail(requestUser.email());
@@ -58,7 +60,7 @@ public class UserService {
     //DELETAR  USUARIO
     public void deletarUsuario(Long id) {
         UserEntity userEntity = userEntityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
          userEntityRepository.delete(userEntity);
     }
