@@ -1,0 +1,13 @@
+package side.financialmanagementapi.repository.user;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+import side.financialmanagementapi.entities.user.UserEntity;
+
+@Repository
+public interface UserEntityRepository extends JpaRepository<UserEntity, Long> ,
+        JpaSpecificationExecutor<UserEntity> {
+    UserEntity findByEmail(String email);
+    boolean existsByEmail(String email);
+}
