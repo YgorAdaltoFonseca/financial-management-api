@@ -1,9 +1,13 @@
 package side.financialmanagementapi.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import side.financialmanagementapi.dto.request.user.LoginRequest;
 import side.financialmanagementapi.dto.request.user.UserRequest;
+import side.financialmanagementapi.dto.response.user.LoginResponse;
 import side.financialmanagementapi.dto.response.user.UserResponse;
 import side.financialmanagementapi.entities.user.UserEntity;
 import side.financialmanagementapi.exceptions.EmailAlreadyExistsException;
@@ -17,6 +21,8 @@ import java.util.List;
 public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationManager authenticationManager;
 
     // CADASTRAR USUARIO
     public UserResponse cadastroUsuario(UserRequest requestUser) {
@@ -66,7 +72,7 @@ public class UserService {
         UserEntity userEntity = userEntityRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
-         userEntityRepository.delete(userEntity);
+        userEntityRepository.delete(userEntity);
     }
 
     //LISTAR USUARIOS
@@ -83,5 +89,17 @@ public class UserService {
                 .toList();
     }
 
+    //Login
+    public LoginResponse login(LoginRequest request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email(),
+                        request.senha()
+                )
+        );
+
+        return new LoginResponse("Login successful");
+    }
 
 }

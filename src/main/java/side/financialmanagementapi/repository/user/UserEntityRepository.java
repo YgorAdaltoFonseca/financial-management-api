@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import side.financialmanagementapi.entities.user.UserEntity;
 
+import java.util.Optional;
+
 @Repository
 public interface UserEntityRepository extends JpaRepository<UserEntity, Long> ,
         JpaSpecificationExecutor<UserEntity> {
-    UserEntity findByEmail(String email);
+
+
+    Optional<UserEntity> findByEmail(String email);
     boolean existsByEmail(String email);
 }
