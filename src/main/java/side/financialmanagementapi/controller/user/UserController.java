@@ -1,5 +1,6 @@
 package side.financialmanagementapi.controller.user;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
 
@@ -34,6 +36,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
@@ -42,6 +45,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @GetMapping("/usersList")
     public ResponseEntity<List<UserResponse>> listarUsuarios() {
 

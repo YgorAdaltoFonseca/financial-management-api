@@ -1,5 +1,6 @@
 package side.financialmanagementapi.controller.category;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/category")
+@SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class CategoryController {
 

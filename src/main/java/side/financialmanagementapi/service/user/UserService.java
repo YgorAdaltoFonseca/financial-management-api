@@ -3,6 +3,7 @@ package side.financialmanagementapi.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import side.financialmanagementapi.dto.request.user.LoginRequest;
@@ -13,6 +14,7 @@ import side.financialmanagementapi.entities.user.UserEntity;
 import side.financialmanagementapi.exceptions.EmailAlreadyExistsException;
 import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.user.UserEntityRepository;
+import side.financialmanagementapi.service.JwtService;
 
 import java.util.List;
 
@@ -23,6 +25,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
+
+    private final JwtService jwtService;
+
 
     // CADASTRAR USUARIO
     public UserResponse cadastroUsuario(UserRequest requestUser) {
@@ -92,14 +97,18 @@ public class UserService {
     //Login
     public LoginResponse login(LoginRequest request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.senha()
-                )
+        Authentication authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.email(),
+                                request.senha()
+                        )
+                );
+
+        String token = jwtService.generateToken(
+                authentication.getName()
         );
 
-        return new LoginResponse("Login successful");
+        return new LoginResponse(token);
     }
-
 }
