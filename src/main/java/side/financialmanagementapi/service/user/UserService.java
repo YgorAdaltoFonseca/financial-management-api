@@ -1,6 +1,8 @@
 package side.financialmanagementapi.service.user;
 
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -111,4 +113,5 @@ public class UserService {
 
         return new LoginResponse(token);
     }
+
 }

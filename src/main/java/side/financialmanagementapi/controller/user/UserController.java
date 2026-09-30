@@ -10,6 +10,8 @@ import side.financialmanagementapi.dto.request.user.UserRequest;
 import side.financialmanagementapi.dto.response.user.LoginResponse;
 import side.financialmanagementapi.dto.response.user.UserResponse;
 import side.financialmanagementapi.service.user.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -59,6 +61,20 @@ public class UserController {
             @RequestBody LoginRequest request
     ){
         return userService.login(request);
+    }
+
+    @SecurityRequirement(name = "bearer-key")
+    @GetMapping("/me")
+    public ResponseEntity<String> me() {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        return ResponseEntity.ok(email);
     }
 
 }
