@@ -14,8 +14,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-import side.financialmanagementapi.entities.UserEntity;
-import side.financialmanagementapi.repository.UserEntityRepository;
+import side.financialmanagementapi.entities.user.UserEntity;
+import side.financialmanagementapi.repository.user.UserEntityRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

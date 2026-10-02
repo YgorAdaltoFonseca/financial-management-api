@@ -5,12 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import side.financialmanagementapi.dto.response.DashboardResponse;
 import side.financialmanagementapi.dto.response.MonthlyDashboardResponse;
-import side.financialmanagementapi.entities.SubscriptionEntity;
-import side.financialmanagementapi.entities.TransactionEntity;
-import side.financialmanagementapi.enums.SubscriptionStatusEnum;
-import side.financialmanagementapi.enums.TransactionTypeEnum;
-import side.financialmanagementapi.repository.SubscriptionRepository;
-import side.financialmanagementapi.repository.TransactionRepository;
+import side.financialmanagementapi.entities.subscription.SubscriptionEntity;
+import side.financialmanagementapi.entities.transaction.TransactionEntity;
+import side.financialmanagementapi.enums.subscription.SubscriptionStatusEnum;
+import side.financialmanagementapi.enums.transaction.TransactionTypeEnum;
+import side.financialmanagementapi.repository.subscription.SubscriptionRepository;
+import side.financialmanagementapi.repository.transaction.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;

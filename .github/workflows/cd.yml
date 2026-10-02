@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.0
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5.4.0
         with:
@@ -24,6 +25,8 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: mvn clean install
 
   package:
@@ -31,6 +34,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.0
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5.4.0
         with:

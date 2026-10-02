@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.1.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
+
     <groupId>Side</groupId>
     <artifactId>Financial-Management-API</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>Financial Management API</name>
     <description>Financial Management API</description>
 
@@ -18,12 +24,18 @@
         <java.version>21</java.version>
     </properties>
 
+    <!-- ========================================================= -->
+    <!-- PROFILES                                                  -->
+    <!-- ========================================================= -->
+
     <profiles>
+
         <profile>
             <id>dev</id>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
+
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -42,36 +54,32 @@
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
+
     </profiles>
 
+    <!-- ========================================================= -->
+    <!-- DEPENDENCIES                                              -->
+    <!-- ========================================================= -->
+
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+
+        <!-- ===================================================== -->
+        <!-- WEB                                                     -->
+        <!-- ===================================================== -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>3.0.2</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.julien-dubois.bootui</groupId>
-            <artifactId>bootui-spring-boot-starter</artifactId>
-            <version>1.14.1</version>
-        </dependency>
+        <!-- ===================================================== -->
+        <!-- JPA / DATABASE                                         -->
+        <!-- ===================================================== -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-docker-compose</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <dependency>
@@ -80,17 +88,78 @@
             <scope>runtime</scope>
         </dependency>
 
+
+        <!-- ===================================================== -->
+        <!-- SPRING SECURITY                                        -->
+        <!-- ===================================================== -->
+
+        <!-- Core Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Resource Server + JWT -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+
+        <!-- ===================================================== -->
+        <!-- OPENAPI / SWAGGER                                      -->
+        <!-- ===================================================== -->
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+
+        <!-- ===================================================== -->
+        <!-- BOOT UI                                                 -->
+        <!-- ===================================================== -->
+
+        <dependency>
+            <groupId>com.julien-dubois.bootui</groupId>
+            <artifactId>bootui-spring-boot-starter</artifactId>
+            <version>1.14.1</version>
+        </dependency>
+
+
+        <!-- ===================================================== -->
+        <!-- DOCKER COMPOSE                                          -->
+        <!-- ===================================================== -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-docker-compose</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+
+        <!-- ===================================================== -->
+        <!-- LOMBOK                                                  -->
+        <!-- ===================================================== -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
+
+        <!-- ===================================================== -->
+        <!-- TESTING                                                 -->
+        <!-- ===================================================== -->
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
             <version>5.4.0</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -131,59 +200,97 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
+
+    <!-- ========================================================= -->
+    <!-- BUILD                                                     -->
+    <!-- ========================================================= -->
+
     <build>
+
+        <finalName>financial-management-api</finalName>
+
         <plugins>
+
+            <!-- Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+
+            <!-- Maven Compiler + Lombok -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
+
                 <executions>
+
                     <execution>
                         <id>default-compile</id>
                         <phase>compile</phase>
+
                         <goals>
                             <goal>compile</goal>
                         </goals>
+
                         <configuration>
+
                             <annotationProcessorPaths>
+
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                 </path>
+
                             </annotationProcessorPaths>
+
                         </configuration>
                     </execution>
+
+
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
+
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
+
                         <configuration>
+
                             <annotationProcessorPaths>
+
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                 </path>
+
                             </annotationProcessorPaths>
+
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>
+
         </plugins>
-        <finalName>financial-management-api</finalName>
+
+
+        <!-- Resource filtering -->
         <resources>
+
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+
         </resources>
+
     </build>
 
 </project>
+

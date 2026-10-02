@@ -1,0 +1,30 @@
+package side.financialmanagementapi.entities.category;
+
+import jakarta.persistence.*;
+import lombok.*;
+import side.financialmanagementapi.entities.user.UserEntity;
+import side.financialmanagementapi.enums.category.CategoryTypeEnum;
+
+@Entity
+@Table(name = "CategoryTypeEntity")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CategoryTypeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CategoryTypeEnum categoryType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+}
