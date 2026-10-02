@@ -9,11 +9,14 @@ import side.financialmanagementapi.dto.request.user.LoginRequest;
 import side.financialmanagementapi.dto.request.user.UserRequest;
 import side.financialmanagementapi.dto.response.user.LoginResponse;
 import side.financialmanagementapi.dto.response.user.UserResponse;
+import side.financialmanagementapi.entities.user.UserEntity;
+import side.financialmanagementapi.repository.user.UserEntityRepository;
 import side.financialmanagementapi.service.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -21,6 +24,7 @@ import java.util.List;
 public class UserController {
 
     public final UserService userService;
+    public final UserEntityRepository userEntityRepository;
 
 
     @PostMapping("/createUser")
@@ -59,22 +63,35 @@ public class UserController {
     @PostMapping("/login")
     public LoginResponse login(
             @RequestBody LoginRequest request
-    ){
+    ) {
         return userService.login(request);
     }
 
     @SecurityRequirement(name = "bearer-key")
     @GetMapping("/me")
-    public ResponseEntity<String> me() {
+    public ResponseEntity<UserResponse> me() {
 
         Authentication authentication =
                 SecurityContextHolder
                         .getContext()
                         .getAuthentication();
 
-        String email = authentication.getName();
+        Optional<UserEntity> user =
+                userEntityRepository.findByEmail(authentication.getName());
 
-        return ResponseEntity.ok(email);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UserEntity userEntity = user.get();
+
+        return ResponseEntity.ok(
+                new UserResponse(
+                        userEntity.getId(),
+                        userEntity.getName(),
+                        userEntity.getEmail()
+                )
+        );
     }
 
 }
