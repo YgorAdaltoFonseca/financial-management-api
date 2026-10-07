@@ -13,118 +13,133 @@ import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.category.CategoryTypeRepository;
 import side.financialmanagementapi.repository.transaction.TransactionRepository;
 import side.financialmanagementapi.repository.user.UserEntityRepository;
+import side.financialmanagementapi.service.user.AuthenticatedUserService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
-        private final TransactionRepository transactionRepository;
-        private final UserEntityRepository userEntityRepository;
-        private final CategoryTypeRepository categoryTypeRepository;
+    private final TransactionRepository transactionRepository;
+    private final UserEntityRepository userEntityRepository;
+    private final CategoryTypeRepository categoryTypeRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
-        public TransactionResponse createTransaction(
-                TransactionRequest transactionRequest ,
-                Long categoryTypeId ,
-                Long userId
-        ) {
-            System.out.println("categoryTypeId recebido: " + categoryTypeId);
+    public TransactionResponse createTransaction(
+            TransactionRequest transactionRequest,
+            Long categoryTypeId
+    ) {
 
-            CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryTypeId)
-                    .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        CategoryTypeEntity categoryType =
+                categoryTypeRepository.findById(categoryTypeId)
+                        .orElseThrow(() ->
+                                new CategoryNotFoundException("Category not found"));
 
-            UserEntity user = userEntityRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        UserEntity user =
+                authenticatedUserService.getAuthenticatedUser();
 
-            TransactionEntity transactionEntity = TransactionEntity.builder()
-                    .value(transactionRequest.value())
-                    .type(transactionRequest.type())
-                    .origin(transactionRequest.origin())
-                    .description(transactionRequest.description())
-                    .categoryType(categoryType)
-                    .user(user)
-                    .build();
+        TransactionEntity transactionEntity = TransactionEntity.builder()
+                .value(transactionRequest.value())
+                .type(transactionRequest.type())
+                .origin(transactionRequest.origin())
+                .description(transactionRequest.description())
+                .categoryType(categoryType)
+                .user(user)
+                .build();
 
-           TransactionEntity transactionEntitySaved = transactionRepository.save(transactionEntity);
+        TransactionEntity transactionEntitySaved =
+                transactionRepository.save(transactionEntity);
 
+        return new TransactionResponse(
+                transactionEntitySaved.getId(),
+                transactionEntitySaved.getValue(),
+                transactionEntitySaved.getDateTime(),
+                transactionEntitySaved.getType(),
+                transactionEntitySaved.getOrigin(),
+                transactionEntitySaved.getDescription(),
+                transactionEntitySaved.getCategoryType().getId(),
+                transactionEntitySaved.getCategoryType().getName(),
+                transactionEntitySaved.getUser().getId(),
+                transactionEntitySaved.getUser().getName()
+        );
+    }
 
-            return new TransactionResponse(
-                    transactionEntitySaved.getId(),
-                    transactionEntitySaved.getValue(),
-                    transactionEntitySaved.getDateTime(),
-                    transactionEntitySaved.getType(),
-                    transactionEntitySaved.getOrigin(),
-                    transactionEntitySaved.getDescription(),
-                    transactionEntitySaved.getCategoryType().getId() ,
-                    transactionEntitySaved.getCategoryType().getName() ,
-                    transactionEntitySaved.getUser().getId() ,
-                    transactionEntitySaved.getUser().getName()
+    //Atualizar transacao
+    public TransactionResponse updateTransaction(
+            Long id,
+            TransactionRequest transactionRequest,
+            Long categoryTypeId
+    ) {
+        TransactionEntity transactionEntity = transactionRepository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
 
-            );
+        CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryTypeId)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        UserEntity user =
+                authenticatedUserService.getAuthenticatedUser();
+
+        transactionEntity.setValue(transactionRequest.value());
+        transactionEntity.setType(transactionRequest.type());
+        transactionEntity.setOrigin(transactionRequest.origin());
+        transactionEntity.setDescription(transactionRequest.description());
+        transactionEntity.setCategoryType(categoryType);
+        transactionEntity.setUser(user);
+
+        TransactionEntity transactionEntitySaved = transactionRepository.save(transactionEntity);
+        return new TransactionResponse(
+                transactionEntitySaved.getId(),
+                transactionEntitySaved.getValue(),
+                transactionEntitySaved.getDateTime(),
+                transactionEntitySaved.getType(),
+                transactionEntitySaved.getOrigin(),
+                transactionEntitySaved.getDescription(),
+                transactionEntitySaved.getCategoryType().getId(),
+                transactionEntitySaved.getCategoryType().getName(),
+                transactionEntitySaved.getUser().getId(),
+                transactionEntitySaved.getUser().getName()
+        );
+    }
+
+    //deletar
+    public void deleteTransaction(Long id) {
+
+        UserEntity user =
+                authenticatedUserService.getAuthenticatedUser();
+
+        TransactionEntity transactionEntity =
+                transactionRepository.findById(id)
+                        .orElseThrow(() ->
+                                new TransactionNotFoundException("Transaction not found"));
+
+        if (!transactionEntity.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Transaction does not belong to authenticated user");
         }
 
-        //Atualizar transacao
-        public TransactionResponse updateTransaction(
-                Long id ,
-                TransactionRequest transactionRequest ,
-                Long categoryTypeId ,
-                Long userId
-        ) {
-            TransactionEntity transactionEntity = transactionRepository.findById(id)
-                    .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
+        transactionRepository.delete(transactionEntity);
+    }
 
-            CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryTypeId)
-                    .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+    //listaqr transaction
+    public List<TransactionResponse> listTransactions() {
 
-            UserEntity user = userEntityRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
-            transactionEntity.setValue(transactionRequest.value());
-            transactionEntity.setType(transactionRequest.type());
-            transactionEntity.setOrigin(transactionRequest.origin());
-            transactionEntity.setDescription(transactionRequest.description());
-            transactionEntity.setCategoryType(categoryType);
-            transactionEntity.setUser(user);
 
-            TransactionEntity transactionEntitySaved = transactionRepository.save(transactionEntity);
-            return new TransactionResponse(
-                    transactionEntitySaved.getId(),
-                    transactionEntitySaved.getValue(),
-                    transactionEntitySaved.getDateTime(),
-                    transactionEntitySaved.getType(),
-                    transactionEntitySaved.getOrigin(),
-                    transactionEntitySaved.getDescription(),
-                    transactionEntitySaved.getCategoryType().getId() ,
-                    transactionEntitySaved.getCategoryType().getName() ,
-                    transactionEntitySaved.getUser().getId() ,
-                    transactionEntitySaved.getUser().getName()
-            );
-        }
+        List<TransactionEntity> transactionEntities =
+                transactionRepository.findAllByUserId(user.getId());
 
-        //deletar
-        public void deleteTransaction(Long id) {
-            TransactionEntity transactionEntity = transactionRepository.findById(id)
-                    .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
-
-            transactionRepository.delete(transactionEntity);
-        }
-
-        //listaqr transaction
-        public List<TransactionResponse> listTransactions() {
-            List<TransactionEntity> transactionEntities = transactionRepository.findAll();
-
-            return transactionEntities.stream()
-                    .map(transactionEntity -> new TransactionResponse(
-                            transactionEntity.getId() ,
-                            transactionEntity.getValue() ,
-                            transactionEntity.getDateTime() ,
-                            transactionEntity.getType() ,
-                            transactionEntity.getOrigin(),
-                            transactionEntity.getDescription() ,
-                            transactionEntity.getCategoryType().getId() ,
-                            transactionEntity.getCategoryType().getName() ,
-                            transactionEntity.getUser().getId() ,
-                            transactionEntity.getUser().getName()
-                    )).toList();
-        }
+        return transactionEntities.stream()
+                .map(transactionEntity -> new TransactionResponse(
+                        transactionEntity.getId(),
+                        transactionEntity.getValue(),
+                        transactionEntity.getDateTime(),
+                        transactionEntity.getType(),
+                        transactionEntity.getOrigin(),
+                        transactionEntity.getDescription(),
+                        transactionEntity.getCategoryType().getId(),
+                        transactionEntity.getCategoryType().getName(),
+                        transactionEntity.getUser().getId(),
+                        transactionEntity.getUser().getName()
+                )).toList();
+    }
 }
