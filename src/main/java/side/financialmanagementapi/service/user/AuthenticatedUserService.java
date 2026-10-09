@@ -15,14 +15,19 @@ public class AuthenticatedUserService {
     private final UserEntityRepository userEntityRepository;
 
     public UserEntity getAuthenticatedUser() {
-
         Authentication authentication =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
+                SecurityContextHolder.getContext().getAuthentication();
 
-        return userEntityRepository
-                .findByEmail(authentication.getName())
+        Long userId;
+
+        try {
+            userId = Long.parseLong(authentication.getName());
+        } catch (NumberFormatException exception) {
+            throw new UserNotFoundException("Invalid user identity in token");
+        }
+
+        return userEntityRepository.findById(userId)
+                .filter(UserEntity::isEnabled)
                 .orElseThrow(() ->
                         new UserNotFoundException("Authenticated user not found!")
                 );

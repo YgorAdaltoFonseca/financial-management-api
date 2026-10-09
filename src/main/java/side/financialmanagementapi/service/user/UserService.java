@@ -1,8 +1,7 @@
+
 package side.financialmanagementapi.service.user;
 
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,85 +17,67 @@ import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.user.UserEntityRepository;
 import side.financialmanagementapi.service.JwtService;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserEntityRepository userEntityRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtService jwtService;
+    private final AuthenticatedUserService authenticatedUserService;
 
+    //Cadastro
+    public UserResponse cadastroUsuario(UserRequest request) {
 
-    // CADASTRAR USUARIO
-    public UserResponse cadastroUsuario(UserRequest requestUser) {
-
-        if (userEntityRepository.existsByEmail(requestUser.email())) {
+        if (userEntityRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Email already exists!");
         }
 
-        String senhaHash = passwordEncoder.encode(requestUser.senhaHash());
-
-        UserEntity userEntity = UserEntity.builder()
-                .name(requestUser.name())
-                .email(requestUser.email())
-                .senhaHash(senhaHash)
+        UserEntity user = UserEntity.builder()
+                .name(request.name())
+                .email(request.email())
+                .senhaHash(passwordEncoder.encode(request.senhaHash()))
                 .build();
 
-        UserEntity savedUserEntity = userEntityRepository.save(userEntity);
+        UserEntity savedUser = userEntityRepository.save(user);
 
-        return new UserResponse(
-                savedUserEntity.getId(),
-                savedUserEntity.getName(),
-                savedUserEntity.getEmail()
-        );
+        return toResponse(savedUser);
     }
 
-    //ATUALIZAR USUARIO
-    public UserResponse atualizarUsuario(Long id, UserRequest requestUser) {
+    //Atualizar
+    public UserResponse atualizarUsuario(UserRequest request) {
 
-        UserEntity userEntity = userEntityRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
-        userEntity.setName(requestUser.name());
-        userEntity.setEmail(requestUser.email());
-        userEntity.setSenhaHash(requestUser.senhaHash());
+        if (userEntityRepository.existsByEmailAndIdNot(
+                request.email(),
+                user.getId()
+        )) {
+            throw new EmailAlreadyExistsException("Email already exists!");
+        }
 
-        UserEntity savedUserEntity = userEntityRepository.save(userEntity);
+        user.setName(request.name());
+        user.setEmail(request.email());
 
-        return new UserResponse(
-                savedUserEntity.getId(),
-                savedUserEntity.getName(),
-                savedUserEntity.getEmail()
-        );
+
+        user.setSenhaHash(passwordEncoder.encode(request.senhaHash()));
+
+        UserEntity savedUser = userEntityRepository.save(user);
+
+        return toResponse(savedUser);
     }
 
-    //DELETAR  USUARIO
-    public void deletarUsuario(Long id) {
-        UserEntity userEntity = userEntityRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+    //Excluir
+    public void deletarUsuario() {
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
-        userEntityRepository.delete(userEntity);
+        user.setActive(false);
+
+        userEntityRepository.save(user);
     }
 
-    //LISTAR USUARIOS
-    public List<UserResponse> listarUsuarios() {
-
-        List<UserEntity> usuarios = userEntityRepository.findAll();
-
-        return usuarios.stream()
-                .map(user -> new UserResponse(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail()
-                ))
-                .toList();
-    }
-
-    //Login
+    //Login publico
     public LoginResponse login(LoginRequest request) {
 
         Authentication authentication =
@@ -107,11 +88,22 @@ public class UserService {
                         )
                 );
 
-        String token = jwtService.generateToken(
+        UserEntity user = userEntityRepository.findByEmail(
                 authentication.getName()
+        ).orElseThrow(() -> new UserNotFoundException("User not found!"));
+
+        String token = jwtService.generateToken(
+                user.getId().toString()
         );
 
         return new LoginResponse(token);
     }
 
+    private UserResponse toResponse(UserEntity user) {
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
 }

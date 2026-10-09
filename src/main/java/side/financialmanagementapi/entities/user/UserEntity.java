@@ -32,6 +32,11 @@ public class UserEntity implements UserDetails {
     }
 
     @Override
+    public boolean isEnabled() {
+        return active;
+    }
+
+    @Override
     public String getUsername() {
         return email;
     }
@@ -54,4 +59,8 @@ public class UserEntity implements UserDetails {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime registrationDate;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean active = true;
 }

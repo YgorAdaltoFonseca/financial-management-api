@@ -1,3 +1,4 @@
+
 package side.financialmanagementapi.controller.user;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,64 +11,51 @@ import side.financialmanagementapi.dto.request.user.UserRequest;
 import side.financialmanagementapi.dto.response.user.LoginResponse;
 import side.financialmanagementapi.dto.response.user.UserResponse;
 import side.financialmanagementapi.entities.user.UserEntity;
-import side.financialmanagementapi.repository.user.UserEntityRepository;
 import side.financialmanagementapi.service.user.AuthenticatedUserService;
 import side.financialmanagementapi.service.user.UserService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
-    public final UserService userService;
+    private final UserService userService;
     private final AuthenticatedUserService authenticatedUserService;
 
-
     @PostMapping("/createUser")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
-        userService.cadastroUsuario(userRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody UserRequest request
+    ) {
+        return ResponseEntity.ok(
+                userService.cadastroUsuario(request)
+        );
     }
 
     @SecurityRequirement(name = "bearer-key")
-    @PutMapping("/updateUser/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
-
-        userService.atualizarUsuario(id, userRequest);
-
-        return ResponseEntity.ok().build();
+    @PutMapping("/updateUser")
+    public ResponseEntity<UserResponse> updateUser(
+            @Valid @RequestBody UserRequest request
+    ) {
+        return ResponseEntity.ok(
+                userService.atualizarUsuario(request)
+        );
     }
 
     @SecurityRequirement(name = "bearer-key")
-    @DeleteMapping("/deleteUser/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-
-        userService.deletarUsuario(id);
-
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<Void> deleteUser() {
+        userService.deletarUsuario();
         return ResponseEntity.noContent().build();
     }
 
-    @SecurityRequirement(name = "bearer-key")
-    @GetMapping("/usersList")
-    public ResponseEntity<List<UserResponse>> listarUsuarios() {
-
-        List<UserResponse> usuarios = userService.listarUsuarios();
-
-        return ResponseEntity.ok(usuarios);
-    }
-
     @PostMapping("/login")
-    public LoginResponse login(
-            @RequestBody LoginRequest request
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request
     ) {
-        return userService.login(request);
+        return ResponseEntity.ok(
+                userService.login(request)
+        );
     }
-
 
     @SecurityRequirement(name = "bearer-key")
     @GetMapping("/me")
@@ -76,13 +64,12 @@ public class UserController {
         UserEntity user =
                 authenticatedUserService.getAuthenticatedUser();
 
-        return ResponseEntity.ok(
-                new UserResponse(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail()
-                )
+        UserResponse response = new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
         );
-    }
 
+        return ResponseEntity.ok(response);
+    }
 }

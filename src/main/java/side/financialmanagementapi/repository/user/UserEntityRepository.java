@@ -1,3 +1,4 @@
+
 package side.financialmanagementapi.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,10 +9,13 @@ import side.financialmanagementapi.entities.user.UserEntity;
 import java.util.Optional;
 
 @Repository
-public interface UserEntityRepository extends JpaRepository<UserEntity, Long> ,
+public interface UserEntityRepository
+        extends JpaRepository<UserEntity, Long>,
         JpaSpecificationExecutor<UserEntity> {
 
-
     Optional<UserEntity> findByEmail(String email);
+
     boolean existsByEmail(String email);
+
+    boolean existsByEmailAndIdNot(String email, Long id);
 }
