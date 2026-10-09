@@ -1,3 +1,4 @@
+
 package side.financialmanagementapi.controller.subscription;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,54 +13,49 @@ import side.financialmanagementapi.service.subscription.SubscriptionService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/subscription")
+@RequestMapping("/api/subscription")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class SubscriptionController {
+
     private final SubscriptionService subscriptionService;
 
-    @PostMapping("/createSubscription/{userId}/{categoryId}")
-    public ResponseEntity<SubscriptionResponse>  createSubscription(
-            @Valid @RequestBody SubscriptionRequest subscriptionRequest ,
-            @PathVariable Long userId ,
+    @PostMapping("/createSubscription/{categoryId}")
+    public ResponseEntity<SubscriptionResponse> createSubscription(
+            @Valid @RequestBody SubscriptionRequest request,
             @PathVariable Long categoryId
     ) {
-        SubscriptionResponse subscriptionResponse =
-                subscriptionService.createSubscription(subscriptionRequest , userId , categoryId);
+        SubscriptionResponse response =
+                subscriptionService.createSubscription(request, categoryId);
 
-        return ResponseEntity.ok(subscriptionResponse);
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/updateSubscription/{id}/{userId}/{categoryId}")
-    public ResponseEntity<SubscriptionResponse>  updateSubscription(
+    @PutMapping("/updateSubscription/{id}/{categoryId}")
+    public ResponseEntity<SubscriptionResponse> updateSubscription(
             @PathVariable Long id,
-            @PathVariable Long userId ,
-            @PathVariable Long categoryId ,
-            @Valid @RequestBody SubscriptionRequest subscriptionRequest
+            @PathVariable Long categoryId,
+            @Valid @RequestBody SubscriptionRequest request
     ) {
-        SubscriptionResponse subscriptionResponse =
-                subscriptionService.updateSubscription
-                        (id ,  userId , categoryId , subscriptionRequest);
+        SubscriptionResponse response =
+                subscriptionService.updateSubscription(id, categoryId, request);
 
-        return ResponseEntity.ok(subscriptionResponse);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/deleteSubscription/{id}")
-    public ResponseEntity<Void>  deleteSubscription(
+    public ResponseEntity<Void> deleteSubscription(
             @PathVariable Long id
-    ){
+    ) {
         subscriptionService.deleteSubscription(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/listSubscriptions")
-    public ResponseEntity<List<SubscriptionResponse>>  listSubscriptions(){
-
-        List<SubscriptionResponse> subscriptionResponse =
-                subscriptionService.listSubscriptions();
-
-        return ResponseEntity.ok(subscriptionResponse);
+    public ResponseEntity<List<SubscriptionResponse>> listSubscriptions() {
+        return ResponseEntity.ok(
+                subscriptionService.listSubscriptions()
+        );
     }
-
 }

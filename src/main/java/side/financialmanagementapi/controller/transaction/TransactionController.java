@@ -19,27 +19,26 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
 
-    @PostMapping("/createTransaction/{CategoryTypeId}/{UserId}")
+    @PostMapping("/createTransaction/{CategoryTypeId}")
     public ResponseEntity<TransactionResponse> createTransaction(
             @Valid @RequestBody TransactionRequest transactionRequest,
-            @PathVariable Long CategoryTypeId,
-            @PathVariable Long UserId
+            @PathVariable Long CategoryTypeId
+
     ) {
         TransactionResponse response =
-        transactionService.createTransaction(transactionRequest, CategoryTypeId, UserId);
+        transactionService.createTransaction(transactionRequest, CategoryTypeId);
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("updateTransaction/{id}/{UserId}/{CategoryTypeId}")
+    @PutMapping("updateTransaction/{id}/{CategoryTypeId}")
     public ResponseEntity<TransactionResponse> updateTransaction(
             @PathVariable Long id ,
             @Valid @RequestBody TransactionRequest request ,
-            @PathVariable Long CategoryTypeId ,
-            @PathVariable Long UserId
+            @PathVariable Long CategoryTypeId
     ){
         TransactionResponse response =
-        transactionService.updateTransaction(id, request, CategoryTypeId ,UserId  );
+        transactionService.updateTransaction(id, request, CategoryTypeId);
 
         return ResponseEntity.ok(response);
     }
