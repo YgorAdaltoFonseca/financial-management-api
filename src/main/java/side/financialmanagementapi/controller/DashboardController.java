@@ -1,6 +1,5 @@
 package side.financialmanagementapi.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/dashboard")
-@SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class DashboardController {
     private final DashboardService dashboardService;
@@ -22,7 +20,7 @@ public class DashboardController {
     @GetMapping("/total")
     public ResponseEntity<?> getDashboard(){
 
-       ResponseEntity<?> resposta = dashboardService.dashboard();
+        ResponseEntity<?> resposta = dashboardService.dashboard();
 
         return ResponseEntity.ok(resposta).getBody();
     }

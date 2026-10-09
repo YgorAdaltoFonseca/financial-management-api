@@ -1,3 +1,4 @@
+
 package side.financialmanagementapi.service.subscription;
 
 import lombok.RequiredArgsConstructor;
@@ -9,10 +10,10 @@ import side.financialmanagementapi.entities.subscription.SubscriptionEntity;
 import side.financialmanagementapi.entities.user.UserEntity;
 import side.financialmanagementapi.exceptions.CategoryNotFoundException;
 import side.financialmanagementapi.exceptions.SubscriptionNotFoundException;
-import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.category.CategoryTypeRepository;
 import side.financialmanagementapi.repository.subscription.SubscriptionRepository;
-import side.financialmanagementapi.repository.user.UserEntityRepository;
+import side.financialmanagementapi.service.user.AuthenticatedUserService;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,142 +22,112 @@ import static side.financialmanagementapi.enums.subscription.SubscriptionStatusE
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
+
     private final SubscriptionRepository subscriptionRepository;
     private final CategoryTypeRepository categoryTypeRepository;
-    private final UserEntityRepository userEntityRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    //Metado de proxima assinatura
+    // Calcula a proxima cobrança
     public LocalDate getNextCharge(SubscriptionRequest request) {
-
         return switch (request.frequency()) {
-
             case WEEKLY -> request.startDate().plusWeeks(1);
-
             case MONTHLY -> request.startDate().plusMonths(1);
-
             case QUARTERLY -> request.startDate().plusMonths(3);
-
             case SEMIANNUAL -> request.startDate().plusMonths(6);
-
             case ANNUAL -> request.startDate().plusYears(1);
         };
     }
 
-    //Criar assinatura
+    // Cria uma assinatura para o usuario autenticado
     public SubscriptionResponse createSubscription(
-            SubscriptionRequest subscriptionRequest,
-            Long userId,
+            SubscriptionRequest request,
             Long categoryId
     ) {
-        UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
-        CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        CategoryTypeEntity category = categoryTypeRepository
+                .findByIdAndUser_Id(categoryId, user.getId())
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category not found"));
 
-        LocalDate nextCharge = getNextCharge(subscriptionRequest);
-
-        SubscriptionEntity subscriptionEntity = SubscriptionEntity.builder()
-                .name(subscriptionRequest.name())
-                .value(subscriptionRequest.value())
-                .frequency(subscriptionRequest.frequency())
-                .startDate(subscriptionRequest.startDate())
-                .nextCharge(nextCharge)
+        SubscriptionEntity subscription = SubscriptionEntity.builder()
+                .name(request.name())
+                .value(request.value())
+                .frequency(request.frequency())
+                .startDate(request.startDate())
+                .nextCharge(getNextCharge(request))
                 .subscriptionStatus(ACTIVE)
-                .user(userEntity)
-                .categoryType(categoryType)
+                .user(user)
+                .categoryType(category)
                 .build();
 
-        SubscriptionEntity subscriptionSaved = subscriptionRepository.save(subscriptionEntity);
-
-        return new SubscriptionResponse(
-                subscriptionSaved.getId(),
-                subscriptionSaved.getName(),
-                subscriptionSaved.getValue(),
-                subscriptionSaved.getFrequency(),
-                subscriptionSaved.getStartDate(),
-                subscriptionSaved.getNextCharge(),
-                subscriptionSaved.getSubscriptionStatus(),
-                subscriptionSaved.getUser().getId(),
-                subscriptionSaved.getUser().getName(),
-                subscriptionSaved.getCategoryType().getId(),
-                subscriptionSaved.getCategoryType().getName()
-        );
+        return toResponse(subscriptionRepository.save(subscription));
     }
 
-    //Atualizar
+    // Atualiza somente uma assinatura pertencente ao usuario autenticado
     public SubscriptionResponse updateSubscription(
-            Long id ,
-            Long userId ,
-            Long categoryId ,
-            SubscriptionRequest subscriptionRequest
+            Long id,
+            Long categoryId,
+            SubscriptionRequest request
     ) {
-        SubscriptionEntity subscriptionEntity = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new SubscriptionNotFoundException("Subscription not found"));
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
-        UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        SubscriptionEntity subscription = subscriptionRepository
+                .findByIdAndUser_Id(id, user.getId())
+                .orElseThrow(() ->
+                        new SubscriptionNotFoundException("Subscription not found"));
 
-        CategoryTypeEntity categoryType = categoryTypeRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        CategoryTypeEntity category = categoryTypeRepository
+                .findByIdAndUser_Id(categoryId, user.getId())
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category not found"));
 
-        LocalDate nextCharge = getNextCharge(subscriptionRequest);
+        subscription.setName(request.name());
+        subscription.setValue(request.value());
+        subscription.setFrequency(request.frequency());
+        subscription.setStartDate(request.startDate());
+        subscription.setNextCharge(getNextCharge(request));
+        subscription.setCategoryType(category);
 
-        subscriptionEntity.setName(subscriptionRequest.name());
-        subscriptionEntity.setValue(subscriptionRequest.value());
-        subscriptionEntity.setFrequency(subscriptionRequest.frequency());
-        subscriptionEntity.setStartDate(subscriptionRequest.startDate());
-        subscriptionEntity.setNextCharge(nextCharge);
-        subscriptionEntity.setUser(userEntity);
-        subscriptionEntity.setCategoryType(categoryType);
+        return toResponse(subscriptionRepository.save(subscription));
+    }
 
-        SubscriptionEntity subscriptionSaved = subscriptionRepository.save(subscriptionEntity);
+    // Exclui somente uma assinatura pertencente ao usuario autenticado
+    public void deleteSubscription(Long id) {
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
 
+        SubscriptionEntity subscription = subscriptionRepository
+                .findByIdAndUser_Id(id, user.getId())
+                .orElseThrow(() ->
+                        new SubscriptionNotFoundException("Subscription not found"));
+
+        subscriptionRepository.delete(subscription);
+    }
+
+    // Lista somente as assinaturas do usuario autenticado
+    public List<SubscriptionResponse> listSubscriptions() {
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
+
+        return subscriptionRepository.findAllByUser_Id(user.getId())
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    // Converte entidade para DTO de resposta
+    private SubscriptionResponse toResponse(SubscriptionEntity subscription) {
         return new SubscriptionResponse(
-                subscriptionSaved.getId(),
-                subscriptionSaved.getName(),
-                subscriptionSaved.getValue(),
-                subscriptionSaved.getFrequency(),
-                subscriptionSaved.getStartDate(),
-                subscriptionSaved.getNextCharge(),
-                subscriptionSaved.getSubscriptionStatus(),
-                subscriptionSaved.getUser().getId(),
-                subscriptionSaved.getUser().getName(),
-                subscriptionSaved.getCategoryType().getId(),
-                subscriptionSaved.getCategoryType().getName()
-
+                subscription.getId(),
+                subscription.getName(),
+                subscription.getValue(),
+                subscription.getFrequency(),
+                subscription.getStartDate(),
+                subscription.getNextCharge(),
+                subscription.getSubscriptionStatus(),
+                subscription.getUser().getId(),
+                subscription.getUser().getName(),
+                subscription.getCategoryType().getId(),
+                subscription.getCategoryType().getName()
         );
     }
-
-    //Excluir
-    public void deleteSubscription(Long id) {
-        SubscriptionEntity subscriptionEntity = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new SubscriptionNotFoundException("Subscription not found"));
-
-        subscriptionRepository.delete(subscriptionEntity);
-    }
-
-    //Listar Assinaturas
-    public List<SubscriptionResponse> listSubscriptions() {
-        List<SubscriptionEntity> subscriptionEntities =  subscriptionRepository.findAll();
-
-        return subscriptionEntities
-                .stream()
-                .map(subscriptionEntity ->
-                        new SubscriptionResponse(
-                                subscriptionEntity.getId() ,
-                                subscriptionEntity.getName() ,
-                                subscriptionEntity.getValue() ,
-                                subscriptionEntity.getFrequency() ,
-                                subscriptionEntity.getStartDate() ,
-                                subscriptionEntity.getNextCharge() ,
-                                subscriptionEntity.getSubscriptionStatus() ,
-                                subscriptionEntity.getUser().getId() ,
-                                subscriptionEntity.getUser().getName() ,
-                                subscriptionEntity.getCategoryType().getId() ,
-                                subscriptionEntity.getCategoryType().getName()
-                        )
-                ).toList();
-    }
-
 }
