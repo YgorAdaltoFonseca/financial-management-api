@@ -19,26 +19,23 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final UserEntityRepository userEntityRepository;
 
-    @PostMapping("/createCategory/{userId}")
+    @PostMapping("/createCategory")
     public ResponseEntity<CategoryResponse> criarCategoria(
-            @PathVariable Long userId,
             @Valid @RequestBody CategoryRequest request
     ) {
 
-        CategoryResponse response = categoryService.createCategory(request, userId);
+        CategoryResponse response = categoryService.createCategory(request);
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/updateCategory/{userId}")
+    @PutMapping("/updateCategory/{id}")
     public ResponseEntity<CategoryResponse> atualizarCategoria(
-            @PathVariable Long userId,
+            @PathVariable Long id,
             @Valid @RequestBody CategoryRequest request
-    ){
-        CategoryResponse response = categoryService.updateCategory(userId, request);
-
+    ) {
+        CategoryResponse response = categoryService.updateCategory(id, request);
         return ResponseEntity.ok(response);
     }
 

@@ -10,6 +10,7 @@ import side.financialmanagementapi.exceptions.CategoryNotFoundException;
 import side.financialmanagementapi.exceptions.UserNotFoundException;
 import side.financialmanagementapi.repository.category.CategoryTypeRepository;
 import side.financialmanagementapi.repository.user.UserEntityRepository;
+import side.financialmanagementapi.service.user.AuthenticatedUserService;
 
 import java.util.List;
 
@@ -17,13 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryTypeRepository categoryTypeRepository;
-    private final UserEntityRepository userEntityRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
 
     //Criar categoria
-    public CategoryResponse createCategory(CategoryRequest categoryRequest , Long userId) {
-        UserEntity user = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    public CategoryResponse createCategory(CategoryRequest categoryRequest) {
+        UserEntity user =
+                authenticatedUserService.getAuthenticatedUser();
 
         CategoryTypeEntity categoryTypeEntity = CategoryTypeEntity.builder()
                 .name(categoryRequest.name())
@@ -41,33 +42,46 @@ public class CategoryService {
     }
 
     //Atualizar categoria
-    public CategoryResponse updateCategory(Long id , CategoryRequest categoryRequest){
-        CategoryTypeEntity categoryType = categoryTypeRepository.findById(id)
+    public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest) {
+
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
+
+        CategoryTypeEntity category = categoryTypeRepository.findById(id)
+                .filter(c -> c.getUser().getId().equals(user.getId()))
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-        categoryType.setName(categoryRequest.name());
-        categoryType.setCategoryType(categoryRequest.categoryType());
+        category.setName(categoryRequest.name());
+        category.setCategoryType(categoryRequest.categoryType());
 
-        categoryTypeRepository.save(categoryType);
+        CategoryTypeEntity saved = categoryTypeRepository.save(category);
 
         return new CategoryResponse(
-                categoryType.getId(),
-                categoryType.getName(),
-                categoryType.getCategoryType()
+                saved.getId(),
+                saved.getName(),
+                saved.getCategoryType()
         );
     }
 
     //Deletar Categoria
-    public void deleteCategory(Long id){
-        CategoryTypeEntity categoryType = categoryTypeRepository.findById(id)
+    public void deleteCategory(Long id) {
+
+        UserEntity user = authenticatedUserService.getAuthenticatedUser();
+
+        CategoryTypeEntity category = categoryTypeRepository.findById(id)
+                .filter(c -> c.getUser().getId().equals(user.getId()))
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-        categoryTypeRepository.delete(categoryType);
+        categoryTypeRepository.delete(category);
     }
-    
+
     //Listar todas as categorias
     public List<CategoryResponse> listarCategorias(){
-        List<CategoryTypeEntity> categoryTypeEntities = categoryTypeRepository.findAll();
+
+        UserEntity user =
+                authenticatedUserService.getAuthenticatedUser();
+
+        List<CategoryTypeEntity> categoryTypeEntities =
+                categoryTypeRepository.findAllByUserId(user.getId());
         
         return categoryTypeEntities.stream()
                 .map(category -> new CategoryResponse(
