@@ -123,8 +123,8 @@ class FinancialManagementApiApplicationTests {
                 .then().statusCode(200).body("size()", equalTo(0));
         given().auth().oauth2(secondToken).delete("/api/transaction/delete/" + transactionId)
                 .then().statusCode(404);
-        given().auth().oauth2(secondToken).put("/api/transaction/updateTransaction/" + transactionId + "/" + categoryId)
-                .contentType("application/json")
+        given().auth().oauth2(secondToken).contentType("application/json")
+                .put("/api/transaction/updateTransaction/" + transactionId + "/" + categoryId)
                 .body("{\"value\":1,\"type\":\"EXIT\",\"origin\":\"MANUAL\",\"description\":\"tamper\"}")
                 .then().statusCode(404);
         given().auth().oauth2(secondToken).get("/api/category/categoriesList")
