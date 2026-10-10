@@ -11,6 +11,7 @@ import side.financialmanagementapi.enums.subscription.SubscriptionStatusEnum;
 import side.financialmanagementapi.enums.transaction.TransactionTypeEnum;
 import side.financialmanagementapi.repository.subscription.SubscriptionRepository;
 import side.financialmanagementapi.repository.transaction.TransactionRepository;
+import side.financialmanagementapi.service.user.AuthenticatedUserService;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -22,9 +23,14 @@ public class DashboardService {
 
     private final TransactionRepository transactionRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final AuthenticatedUserService authenticatedUserService;
+
+    private Long currentUserId() {
+        return authenticatedUserService.getAuthenticatedUser().getId();
+    }
 
     public BigDecimal totalEntries() {
-        return transactionRepository.findAll()
+        return transactionRepository.findAllByUser_Id(currentUserId())
                 .stream()
                 .filter(transaction -> transaction.getType() == TransactionTypeEnum.ENTRY)
                 .map(TransactionEntity::getValue)
@@ -32,7 +38,7 @@ public class DashboardService {
     }
 
     public BigDecimal totalExit() {
-        return transactionRepository.findAll()
+        return transactionRepository.findAllByUser_Id(currentUserId())
                 .stream()
                 .filter(transaction -> transaction.getType() == TransactionTypeEnum.EXIT)
                 .map(TransactionEntity::getValue)
@@ -41,7 +47,7 @@ public class DashboardService {
 
 
     public BigDecimal totalSubscription() {
-        return subscriptionRepository.findAll()
+        return subscriptionRepository.findAllByUser_Id(currentUserId())
                 .stream()
                 .filter(subscription -> subscription.getSubscriptionStatus() == SubscriptionStatusEnum.ACTIVE)
                 .map(SubscriptionEntity::getValue)
@@ -58,7 +64,7 @@ public class DashboardService {
 
     public List<MonthlyDashboardResponse> monthlyDashboard() {
 
-        List<TransactionEntity> transactions = transactionRepository.findAll();
+        List<TransactionEntity> transactions = transactionRepository.findAllByUser_Id(currentUserId());
 
         List<YearMonth> months = transactions.stream()
                 .map(transaction -> YearMonth.from(transaction.getDateTime()))
