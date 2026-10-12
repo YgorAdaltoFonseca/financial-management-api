@@ -7,6 +7,7 @@ docs/HELP.md
 
 # Environment / Secrets
 .env
+!.env.example
 
 # Logs
 *.log
@@ -39,3 +40,16 @@ build/
 
 # VS Code
 .vscode/
+
+# Frontend
+frontend/node_modules/
+frontend/.pnpm-store/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Local Maven cache used when the sandbox cannot access the user Maven cache
+.maven-repository/
+.toolchain/
